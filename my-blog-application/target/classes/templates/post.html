@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Application</title>
+    <link rel="icon"
+          href="https://cdn.icon-icons.com/icons2/1945/PNG/512/iconfinder-blog-4661578_122455.png"
+          type="image/x-icon">
+    <style>
+         .main{
+             display:flex;
+             flex-wrap:wrap;
+             justify-content:center;
+         }
+         p{
+             text-align: justify;
+             font-size: 17px;
+             margin: 12px;
+         }
+        .contents{
+            display: inline-block;
+            border: 2px solid black;
+            max-height: max-content;
+            margin: 10px;
+        }
+        .author{
+            display: flex;
+        }
+        label{
+            margin: 13px;
+            text-align:center;
+            display:flex;
+        }
+         .comment{
+            display: flex;
+            justify-content:flex-start;
+            align-items: center;
+            margin: 10px;
+            padding: 80px;
+        }
+        form{
+            display:grid;
+        }
+        input{
+            margin: 10px;
+        }
+        #comment{
+            color: black;
+        }
+       .comments{
+            position:relative;
+            left: 880px;
+            bottom: 320px;
+            margin:10px;
+            border: 2px solid black;
+            width: 268px;
+            padding: 31px;
+            height: 60px;
+        }
+        .heading{
+          text-align:center;
+          position:relative;
+          left: 330px;
+          bottom: 320px;
+        }
+       .comments form input{
+            position: relative;
+            bottom: 35px;
+            width: 60px;
+            left: 109px;
+        }
+        .update{
+            position: relative;
+            bottom: 5px;
+            left: -110px;
+        }
+        h3,h5{
+            margin: 5px;
+        }
+        #commentname{
+            position:relative;
+            left:104px;
+            font-size:20px;
+            bottom:18px;
+            width: 224px;
+        }
+        #comment{
+           position:relative;
+           bottom:30px;
+           width: 157px;
+        }
+        #deleted{
+           position:relative;
+           bottom: 80px;
+           left: 73px;
+        }
+        #title{
+            justify-content: center;
+            color: black;
+            font-size: 25px;
+        }
+        #loginlink{
+            text-decoration: none;
+            position: relative;
+            right: 18px;
+            font-size: 20px;
+        }
+        .login{
+            display:flex;
+            justify-content:end;
+        }
+    </style>
+</head>
+<body>
+<div sec:authorization="hasAnyAuthority('AUTHOR','ADMIN')" th:if="${#authorization.expression('!hasAnyAuthority(''AUTHOR'',''ADMIN'')')}">
+<div class="login">
+    <a id="loginlink" th:href="@{/login}">Login</a>
+</div>
+</div>
+<div class="main">
+    <div class="contents">
+        <label id="title" th:text="${post.title}"></label>
+        <label th:text="${post.author}"></label>
+        <label th:text="${post.createdAt}"></label>
+        <div th:each="tag : ${post.tags}">
+            <h5 th:text="${tag.name}"></h5>
+        </div>
+        <p th:text="${post.content}"></p>
+    </div>
+</div>
+<div class="comment">
+    <form th:action="@{/save-comment}" method="post">
+        <h1>Leave a Comment</h1>
+        <input type="hidden" name="postId" th:value="${post.id}">
+        <input type="text" name="name" placeholder="Your Name">
+        <input type="email" name="email" placeholder="Your email">
+        <input type="text" name="comment" placeholder="Comment here">
+        <input type="submit" value="Post Comment">
+    </form>
+</div>
+<h1 class="heading">Comments</h1>
+<div class="comments" th:each="comment : ${commentList}">
+    <form class="update" th:action="@{comment/update}" method="post">
+        <label id="commentname" type="text" th:text="${comment.name}"></label>
+        <input id="comment" name="newComment" type="text" th:value="${comment.comment}">
+        <input type="hidden" name="postId" th:value="${post.id}">
+        <input type="hidden" name="commentId" th:value="${comment.id}">
+        <div sec:authorization="hasAnyAuthority('AUTHOR')" th:if="${#authorization.expression('hasAnyAuthority(''AUTHOR'',''ADMIN'')')and  post.author == user.name}">
+        <input type="submit" value="update" class="update">
+        </div>
+        <div sec:authorization="hasAnyAuthority('ADMIN')" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')')}">
+            <input type="submit" value="update" class="update">
+        </div>
+    </form>
+    <form th:action="@{/comment/delete}">
+        <input type="hidden" name="postId" th:value="${post.id}">
+        <input type="hidden" name="commentId" th:value="${comment.id}">
+        <div sec:authorization="hasAnyAuthority('AUTHOR')" th:if="${#authorization.expression('hasAnyAuthority(''AUTHOR'')') and  post.author == user.name}">
+        <input type="submit" value="delete" id="deleted">
+        </div>
+        <div sec:authorization="hasAnyAuthority('ADMIN')" th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')')}">
+            <input type="submit" value="delete" id="deleted">
+        </div>
+    </form>
+</div>
+</body>
+</html>
