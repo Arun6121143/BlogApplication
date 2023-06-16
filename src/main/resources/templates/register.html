@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Application</title>
+    <link rel="icon"
+          href="https://cdn.icon-icons.com/icons2/1945/PNG/512/iconfinder-blog-4661578_122455.png"
+          type="image/x-icon">
+    <style>
+        body{
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            margin: 121px;
+        }
+        .title,.inputs,.password{
+            text-align: center;
+        }
+        .inputs,.password{
+           margin: 10px;
+        }
+        .submit{
+            width: 58px;
+            position: relative;
+            left: 75px;
+            height: 30px;
+        }
+        .form{
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            padding: 34px;
+        }
+        .inputs input{
+            width:200px;
+            height: 20px;
+        }
+        .password input{
+            width:200px;
+            height: 20px;
+        }
+        p{
+            text-align: center;
+        }
+        .error-message{
+            text-align: center;
+            color:red;
+        }
+    </style>
+</head>
+<body>
+<div class="title">
+    <h1>Create Account</h1>
+</div>
+<div class="form">
+    <form th:action="@{/save-registration}" method="post">
+        <div class="inputs">
+            <input type="text" name="name" placeholder="Your Name" required>
+        </div>
+        <div class="inputs">
+            <input type="text" name="email" placeholder="Your email" required>
+        </div>
+        <div class="password">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="password">
+            <input type="password" name="confirm password" placeholder="Confirm Password" required>
+        </div>
+        <div th:if="${passwordMismatch}" class="error-message">Passwords do not match</div>
+        <div th:if="${emailAlreadyExists}" class="error-message">Email Already Exists</div>
+        <input type="submit" class="submit">
+    </form>
+    <p>Have an account?<a href="/login">login</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Application</title>
+    <link rel="icon"
+          href="https://cdn.icon-icons.com/icons2/1945/PNG/512/iconfinder-blog-4661578_122455.png"
+          type="image/x-icon">
+    <style>
+        .content,h1{
+            display: grid;
+            justify-content: center;
+            align-items: center;
+        }
+        .title,.tag,.post{
+            margin: 11px;
+        }
+        .title input{
+            width: 800px;
+            height: 25px;
+        }
+        .tag input{
+            width: 800px;
+            height: 25px;
+        }
+        .post textarea{
+            width: 800px;
+            height: 200px;
+        }
+        #submit{
+            width: 100px;
+            height: 30px;
+            position: relative;
+            left: 350px;
+        }
+        .author input{
+            position: relative;
+            left: 11px;
+            padding: 5px;
+            padding-right: 623px
+        }
+    </style>
+</head>
+<body>
+<h1>New Post</h1>
+<div class="content">
+    <form th:action="@{/save-post}" method="post">
+        <div class="title">
+            <input type="text" name="title" placeholder="Title" required>
+        </div>
+        <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+        <div class="author">
+            <input type="text" name="author" placeholder="AuthorName" required>
+        </div>
+        </div>
+        <div class="tag">
+            <input type="text" name="tags" placeholder="Tags" required>
+        </div>
+        <div class="post">
+            <textarea type="text" name="content"></textarea>
+        </div>
+        <input type="submit" value="Publish" id="submit">
+    </form>
+</div>
+</body>
+</html>
